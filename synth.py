@@ -10,6 +10,21 @@ class FluidSynth(object):
         super(FluidSynth, *a, **k)
         self._soundfont = soundfont if soundfont is not None else SOUNDFONT
 
+    def load_misc(self):
+
+        self.fs = fluidsynth.Synth()
+        self.fs.start()
+
+        self.sfid = self.fs.sfload(self._soundfont)
+        self.fs.program_select(0, self.sfid, 0, 0)
+
+    def play_note_loaded(self, note):
+        self.fs.noteon(0, note.value, note.velocity)
+        time.sleep(note.duration)
+
+        self.fs.noteoff(0, note.value)
+        time.sleep(0.1)
+
     def play_note(self, note):
         fs = fluidsynth.Synth()
         fs.start()

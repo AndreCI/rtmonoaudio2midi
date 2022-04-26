@@ -129,6 +129,7 @@ class StreamProcessor(object):
             window_size=WINDOW_SIZE,
             segments_buf=RING_BUFFER_SIZE)
         self._synth = FluidSynth()
+        self._synth.load_misc()
 
     def run(self):
         pya = PyAudio()
@@ -155,10 +156,11 @@ class StreamProcessor(object):
         if freq0:
             # Onset detected
             print("Note detected; fundamental frequency: ", freq0)
-            midi_note_value = int(hz_to_midi(freq0)[0])
-            print("Midi note value: ", midi_note_value)
-            note = RTNote(midi_note_value, 100, 0.5)
-            self._synth.play_note(note)
+            for i in range(10):
+                midi_note_value = int(hz_to_midi(freq0+i*20)[0])
+                print("Midi note value: ", midi_note_value)
+                note = RTNote(midi_note_value, 100 + i*5, 0.5 + i*0.1) #value velocity duration
+                self._synth.play_note_loaded(note)
         return (data, paContinue)
 
 
